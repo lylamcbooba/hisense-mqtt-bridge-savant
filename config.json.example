@@ -1,0 +1,14 @@
+{
+  "tv_ip": "192.168.1.XX",
+  "tv_mac": "AA:BB:CC:DD:EE:FF",
+  "bind_address": "127.0.0.1",
+  "bridge_port": 8642,
+  "client_id": "SavantHost",
+  "mqtt_port": 36669,
+  "mqtt_username": "hisenseservice",
+  "mqtt_password": "multimqttservice",
+  "auth_token": null,
+  "retry_interval_sec": 30,
+  "stale_state_timeout_sec": 60,
+  "source_map": null
+}
