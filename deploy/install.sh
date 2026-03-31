@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# deploy/install.sh — Install Hisense MQTT Bridge on Savant Smart Host
+# deploy/install.sh — Install Hisense Android TV Bridge on Savant Smart Host
 set -euo pipefail
 
 INSTALL_DIR="/opt/hisense-bridge"
 SERVICE_USER="hisense-bridge"
 SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
-echo "=== Hisense MQTT Bridge Installer ==="
+echo "=== Hisense Android TV Bridge Installer ==="
 
 # Create user if not exists
 if ! id "$SERVICE_USER" &>/dev/null; then
@@ -21,11 +21,6 @@ sudo mkdir -p "$INSTALL_DIR"/{src,certs}
 # Copy source files
 sudo cp "$SCRIPT_DIR"/src/*.py "$INSTALL_DIR/src/"
 sudo cp "$SCRIPT_DIR"/requirements.txt "$INSTALL_DIR/"
-
-# Copy certificates
-if [ -d "$SCRIPT_DIR/certs" ] && [ "$(ls -A "$SCRIPT_DIR/certs" 2>/dev/null)" ]; then
-    sudo cp "$SCRIPT_DIR"/certs/* "$INSTALL_DIR/certs/"
-fi
 
 # Create venv and install deps
 echo "Setting up Python virtual environment..."
@@ -44,13 +39,15 @@ cfg = {
     'bind_address': '127.0.0.1',
     'bridge_port': 8642,
     'client_id': 'SavantHost',
-    'mqtt_port': 36669,
-    'mqtt_username': 'hisenseservice',
-    'mqtt_password': 'multimqttservice',
-    'auth_token': None,
-    'retry_interval_sec': 30,
-    'stale_state_timeout_sec': 60,
-    'source_map': None,
+    'api_port': 6466,
+    'pair_port': 6467,
+    'source_map': {
+        'HDMI1': 'KEYCODE_TV_INPUT_HDMI_1',
+        'HDMI2': 'KEYCODE_TV_INPUT_HDMI_2',
+        'HDMI3': 'KEYCODE_TV_INPUT_HDMI_3',
+        'HDMI4': 'KEYCODE_TV_INPUT_HDMI_4',
+        'Apps': 'KEYCODE_HOME',
+    },
 }
 with open('$INSTALL_DIR/config.json', 'w') as f:
     json.dump(cfg, f, indent=2)
@@ -75,8 +72,8 @@ echo "=== Installation complete ==="
 echo "Service status: sudo systemctl status hisense-bridge"
 echo "View logs:      sudo journalctl -u hisense-bridge -f"
 echo ""
-echo "To pair with TV:"
+echo "To pair with TV (TV must be on):"
 echo "  curl -X PUT http://localhost:8642/api/auth/pair"
-echo "  (Enter PIN shown on TV screen)"
-echo "  curl -X PUT 'http://localhost:8642/api/auth/confirm?pin=XXXX'"
+echo "  (Enter 6-character code shown on TV screen)"
+echo "  curl -X PUT 'http://localhost:8642/api/auth/confirm?pin=XXXXXX'"
 echo ""

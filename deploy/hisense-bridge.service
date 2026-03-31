@@ -1,5 +1,5 @@
 [Unit]
-Description=Hisense MQTT Bridge for Savant
+Description=Hisense Android TV Bridge for Savant
 After=network-online.target
 Wants=network-online.target
 

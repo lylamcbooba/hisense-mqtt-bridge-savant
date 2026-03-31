@@ -7,36 +7,44 @@
            minimum_component_engine_version="11.0"
            rpm_xml_version="1.2">
     <notes>
-        Hisense 100U65QF (100" 4K Laser TV) - Custom MQTT Bridge Driver
+        Hisense 100U65QF (100" 4K Laser TV) - Android TV Remote v2 Bridge Driver
 
         SETUP NOTES FOR IP CONTROL:
-        - This profile communicates via HTTP to a custom hisense-mqtt-bridge service
-          that translates HTTP commands to MQTT messages for the Hisense TV.
-        - The bridge service must be running and accessible on the same network.
+        - This profile communicates via HTTP to a custom bridge service that
+          translates HTTP commands to Android TV Remote v2 protocol (port 6466).
+        - The bridge service must be running and accessible on the Savant host.
         - Default bridge port: 8642 (configurable in bridge service settings).
-        - The bridge service connects to the TV via MQTT (HiSmart protocol).
+        - The TV must be paired with the bridge service before control is possible.
 
         REQUIREMENTS:
-        - hisense-mqtt-bridge service must be installed and running.
-        - The Hisense TV must be connected to the network and MQTT enabled.
-        - Bridge service URL: http://&lt;bridge-host&gt;:8642
+        - hisense-bridge service must be installed and running.
+        - The Hisense TV must be connected to the network (wired recommended).
         - All bridge files are deployed to the Savant host at /home/RPM/tmp
-        - See project README for bridge installation and configuration instructions.
+        - Bridge service URL: http://localhost:8642
+        - Python 3.8+ required on Savant host.
+
+        PAIRING (one-time setup):
+        1. Ensure the TV is fully powered on (screen showing home screen).
+        2. Run: curl -X PUT http://localhost:8642/api/auth/pair
+        3. A 6-character hex code will appear on the TV screen.
+        4. Run: curl -X PUT 'http://localhost:8642/api/auth/confirm?pin=XXXXXX'
+        5. Pairing is persistent - only needs to be done once.
 
         AVAILABLE INPUTS:
         - HDMI 1 (eARC) - supports ARC/eARC audio return
         - HDMI 2
         - HDMI 3
         - HDMI 4
-        - Apps (internal smart TV apps)
+        - Apps (internal smart TV apps via Home key)
 
         KNOWN LIMITATIONS:
-        - Power On requires the TV to be in network standby mode.
-        - Volume feedback is polled (10 second interval), not pushed in real-time.
-        - No discrete channel tuning (TV tuner not exposed via MQTT).
+        - Power On uses Wake-on-LAN; TV must have network standby enabled.
+        - Volume is controlled via repeated key presses (no absolute set).
+        - Mute uses toggle; state tracked via callbacks for discrete on/off.
+        - No IR control available (TV uses Bluetooth remote only).
 
         ====================== Change Log ==================
-        Version: 1.2 Change: Initial release of custom MQTT bridge profile.  Risk: Low Importance: Critical
+        Version: 1.2 Change: Migrated from MQTT to Android TV Remote v2 protocol.  Risk: High Importance: Critical
     </notes>
     <component_properties>
         <always_repeat_input_selection>true</always_repeat_input_selection>
