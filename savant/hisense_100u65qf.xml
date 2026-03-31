@@ -7,9 +7,36 @@
            minimum_component_engine_version="11.0"
            rpm_xml_version="1.2">
     <notes>
-        Hisense 100U65QF MQTT Bridge Driver.
-        Requires hisense-mqtt-bridge service running on localhost:8642.
-        See: docs/superpowers/specs/2026-03-29-hisense-mqtt-bridge-design.md
+        Hisense 100U65QF (100" 4K Laser TV) - Custom MQTT Bridge Driver
+
+        SETUP NOTES FOR IP CONTROL:
+        - This profile communicates via HTTP to a custom hisense-mqtt-bridge service
+          that translates HTTP commands to MQTT messages for the Hisense TV.
+        - The bridge service must be running and accessible on the same network.
+        - Default bridge port: 8642 (configurable in bridge service settings).
+        - The bridge service connects to the TV via MQTT (HiSmart protocol).
+
+        REQUIREMENTS:
+        - hisense-mqtt-bridge service must be installed and running.
+        - The Hisense TV must be connected to the network and MQTT enabled.
+        - Bridge service URL: http://&lt;bridge-host&gt;:8642
+        - All bridge files are deployed to the Savant host at /home/RPM/tmp
+        - See project README for bridge installation and configuration instructions.
+
+        AVAILABLE INPUTS:
+        - HDMI 1 (eARC) - supports ARC/eARC audio return
+        - HDMI 2
+        - HDMI 3
+        - HDMI 4
+        - Apps (internal smart TV apps)
+
+        KNOWN LIMITATIONS:
+        - Power On requires the TV to be in network standby mode.
+        - Volume feedback is polled (10 second interval), not pushed in real-time.
+        - No discrete channel tuning (TV tuner not exposed via MQTT).
+
+        ====================== Change Log ==================
+        Version: 1.2 Change: Initial release of custom MQTT bridge profile.  Risk: Low Importance: Critical
     </notes>
     <component_properties>
         <always_repeat_input_selection>true</always_repeat_input_selection>
