@@ -2,7 +2,7 @@ import json
 import os
 
 REQUIRED_FIELDS = ["tv_ip", "tv_mac", "bind_address", "bridge_port", "client_id",
-                   "mqtt_port", "mqtt_username", "mqtt_password"]
+                   "api_port"]
 
 
 class ConfigError(Exception):
