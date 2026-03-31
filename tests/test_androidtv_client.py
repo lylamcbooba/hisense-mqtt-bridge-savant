@@ -204,7 +204,6 @@ def test_change_source(mock_remote):
     client._connected = True
     client.change_source("HDMI2")
     mock.send_key_command.assert_called_once_with("KEYCODE_TV_INPUT_HDMI_2")
-    assert client.state["input"] == "HDMI2"
 
 
 def test_change_source_unknown(mock_remote):
@@ -215,6 +214,16 @@ def test_change_source_unknown(mock_remote):
     client._connected = True
     with pytest.raises(ValueError, match="Unknown source"):
         client.change_source("HDMI99")
+
+
+def test_set_volume_invalid_value(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    with pytest.raises(ValueError, match="Invalid volume value"):
+        client.set_volume("abc")
 
 
 def test_change_source_no_map():

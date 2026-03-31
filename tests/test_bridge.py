@@ -109,6 +109,13 @@ def test_volume_set_missing_value(client):
     assert resp.status_code == 400
 
 
+def test_volume_set_invalid_value(client):
+    http, mock_client = client
+    mock_client.set_volume.side_effect = ValueError("Invalid volume value: abc")
+    resp = http.put("/api/volume/set?value=abc")
+    assert resp.status_code == 400
+
+
 def test_volume_up(client):
     http, mock_client = client
     resp = http.put("/api/volume/up")

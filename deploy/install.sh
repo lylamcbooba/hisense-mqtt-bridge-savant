@@ -49,9 +49,9 @@ cfg = {
         'Apps': 'KEYCODE_HOME',
     },
 }
-with open('$INSTALL_DIR/config.json', 'w') as f:
+with open(sys.argv[3], 'w') as f:
     json.dump(cfg, f, indent=2)
-" "$TV_IP" "$TV_MAC"
+" "$TV_IP" "$TV_MAC" "$INSTALL_DIR/config.json"
 else
     echo "Config already exists, skipping..."
 fi

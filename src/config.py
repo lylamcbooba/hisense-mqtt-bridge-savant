@@ -1,8 +1,7 @@
 import json
 import os
 
-REQUIRED_FIELDS = ["tv_ip", "tv_mac", "bind_address", "bridge_port", "client_id",
-                   "api_port"]
+REQUIRED_FIELDS = ["tv_ip", "tv_mac", "bind_address", "bridge_port", "client_id"]
 
 
 class ConfigError(Exception):

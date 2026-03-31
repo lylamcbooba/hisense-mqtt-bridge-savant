@@ -67,6 +67,8 @@ def create_app(cfg, tv_client=None, config_path=None):
             return jsonify({"status": "error", "message": "Missing value param"}), 400
         try:
             tc.set_volume(value)
+        except ValueError as e:
+            return jsonify({"status": "error", "message": str(e)}), 400
         except ConnectionError as e:
             return jsonify({"status": "error", "message": str(e)}), 503
         return jsonify({"status": "ok"})

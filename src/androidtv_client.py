@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import threading
-import time
 from androidtvremote2 import AndroidTVRemote, InvalidAuth, CannotConnect, ConnectionClosed
 
 logger = logging.getLogger(__name__)
@@ -36,7 +35,8 @@ class AndroidTVClient:
 
     @property
     def connected(self):
-        return self._connected
+        with self._lock:
+            return self._connected
 
     @property
     def state(self):
@@ -81,8 +81,8 @@ class AndroidTVClient:
         self._remote.add_is_available_updated_callback(self._on_availability_updated)
         try:
             await self._remote.async_connect()
-            self._connected = True
             with self._lock:
+                self._connected = True
                 if self._remote.is_on:
                     self._state["power"] = "ON"
                 vol = self._remote.volume_info
@@ -114,10 +114,11 @@ class AndroidTVClient:
         logger.debug("App updated: %s", app)
 
     def _on_availability_updated(self, is_available):
-        self._connected = is_available
-        if not is_available:
-            with self._lock:
+        with self._lock:
+            self._connected = is_available
+            if not is_available:
                 self._state["power"] = "OFF"
+        if not is_available:
             logger.info("TV became unavailable")
         else:
             logger.info("TV became available")
@@ -129,14 +130,16 @@ class AndroidTVClient:
             self._loop.call_soon_threadsafe(self._loop.stop)
         if self._loop_thread:
             self._loop_thread.join(timeout=5)
-        self._connected = False
+        with self._lock:
+            self._connected = False
         logger.info("Disconnected from Android TV")
 
     # --- Commands ---
 
     def send_key(self, key):
-        if not self._connected:
-            raise ConnectionError("Not connected to TV")
+        with self._lock:
+            if not self._connected:
+                raise ConnectionError("Not connected to TV")
         self._remote.send_key_command(key)
         logger.debug("Sent key: %s", key)
 
@@ -146,10 +149,13 @@ class AndroidTVClient:
         self.send_key(NAV_KEY_MAP[nav_key])
 
     def set_volume(self, value):
-        if not self._connected:
-            raise ConnectionError("Not connected to TV")
-        target = max(0, min(100, int(value)))
+        try:
+            target = max(0, min(100, int(value)))
+        except (ValueError, TypeError):
+            raise ValueError(f"Invalid volume value: {value}")
         with self._lock:
+            if not self._connected:
+                raise ConnectionError("Not connected to TV")
             current = self._state["volume"]
         delta = target - current
         steps = min(abs(delta), MAX_VOLUME_STEPS)
@@ -165,34 +171,33 @@ class AndroidTVClient:
         self.send_key("KEYCODE_VOLUME_DOWN")
 
     def mute_on(self):
-        if not self._connected:
-            raise ConnectionError("Not connected to TV")
         with self._lock:
+            if not self._connected:
+                raise ConnectionError("Not connected to TV")
             if self._state["mute"] == "ON":
                 return
         self._remote.send_key_command("KEYCODE_VOLUME_MUTE")
         logger.debug("Mute on (toggle sent)")
 
     def mute_off(self):
-        if not self._connected:
-            raise ConnectionError("Not connected to TV")
         with self._lock:
+            if not self._connected:
+                raise ConnectionError("Not connected to TV")
             if self._state["mute"] == "OFF":
                 return
         self._remote.send_key_command("KEYCODE_VOLUME_MUTE")
         logger.debug("Mute off (toggle sent)")
 
     def change_source(self, source_name):
-        if not self._connected:
-            raise ConnectionError("Not connected to TV")
+        with self._lock:
+            if not self._connected:
+                raise ConnectionError("Not connected to TV")
         if self._source_map is None:
             raise RuntimeError("Source map not available")
         if source_name not in self._source_map:
             raise ValueError(f"Unknown source: {source_name}")
         key_code = self._source_map[source_name]
         self._remote.send_key_command(key_code)
-        with self._lock:
-            self._state["input"] = source_name
         logger.debug("Changed source to %s via %s", source_name, key_code)
 
     def set_source_map(self, source_map):
