@@ -1,0 +1,876 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component manufacturer="Hisense" model="(xx)U65QF" rpm_xml_version="1.2" minimum_component_engine_version="11.0" xsi:noNamespaceSchemaLocation="racepoint_component_profile.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" alias="Hisense 55QU65QF, Hisense 65QU65QF, Hisense 75QU65QF, Hisense 85QU65QF, Hisense 100QU65QF, Amazon FireTV" device_class="HD_monitor">
+	<notes>
+		====================== Change Log ==================
+		Version: 1.2 Change: Added ARC functionality  Risk: Medium Importance: Non Critical
+	</notes>
+    <component_properties>
+        <always_repeat_input_selection>true</always_repeat_input_selection>
+    </component_properties>
+    <control_interfaces preferred="ir">
+        <ir ir_command_format_type="racepointmedia"></ir>
+    </control_interfaces>
+    <media_interfaces>
+        <input name_on_component="HDMI 1">
+            <combined_media>
+                <audio_media type="hdmi_audio"></audio_media>
+                <video_media type="hdmi"></video_media>
+            </combined_media>
+            <resource resource_type="AV_AMPLIFIER_FUNCTION"></resource>
+            <resource resource_type="AV_MONITOR_SINK"></resource>
+            <resource resource_type="AV_STEREOSPEAKERS_SINK"></resource>
+            <resource resource_type="AV_VOLUMECONTROL_FUNCTION"></resource>
+        </input>
+        <input name_on_component="HDMI 2">
+            <combined_media>
+                <audio_media type="hdmi_audio"></audio_media>
+                <video_media type="hdmi"></video_media>
+            </combined_media>
+            <resource resource_type="AV_AMPLIFIER_FUNCTION"></resource>
+            <resource resource_type="AV_MONITOR_SINK"></resource>
+            <resource resource_type="AV_STEREOSPEAKERS_SINK"></resource>
+            <resource resource_type="AV_VOLUMECONTROL_FUNCTION"></resource>
+        </input>
+        <input name_on_component="HDMI 3">
+            <combined_media>
+                <audio_media type="hdmi_audio"></audio_media>
+                <video_media type="hdmi"></video_media>
+            </combined_media>
+            <resource resource_type="AV_AMPLIFIER_FUNCTION"></resource>
+            <resource resource_type="AV_MONITOR_SINK"></resource>
+            <resource resource_type="AV_STEREOSPEAKERS_SINK"></resource>
+            <resource resource_type="AV_VOLUMECONTROL_FUNCTION"></resource>
+        </input>
+        <input name_on_component="HDMI 4">
+            <combined_media>
+                <audio_media type="hdmi_audio"></audio_media>
+                <video_media type="hdmi"></video_media>
+            </combined_media>
+            <resource resource_type="AV_AMPLIFIER_FUNCTION"></resource>
+            <resource resource_type="AV_MONITOR_SINK"></resource>
+            <resource resource_type="AV_STEREOSPEAKERS_SINK"></resource>
+            <resource resource_type="AV_VOLUMECONTROL_FUNCTION"></resource>
+        </input>
+        <input name_on_component="ANT/CABLE">
+            <signal type="cable_tv_coaxial"></signal>
+            <resource resource_type="AV_MONITOR_SINK"></resource>
+            <resource resource_type="AV_TV_SOURCE"></resource>
+            <resource resource_type="AV_VOLUMECONTROL_FUNCTION"></resource>
+            <resource resource_type="AV_STEREOSPEAKERS_SINK"></resource>
+            <resource resource_type="AV_AMPLIFIER_FUNCTION"></resource>
+        </input>
+        <input name_on_component="AV IN">
+            <audio_media type="rca_stereo"></audio_media>
+            <video_media type="composite"></video_media>
+            <resource resource_type="AV_AMPLIFIER_FUNCTION"></resource>
+            <resource resource_type="AV_MONITOR_SINK"></resource>
+            <resource resource_type="AV_STEREOSPEAKERS_SINK"></resource>
+            <resource resource_type="AV_VOLUMECONTROL_FUNCTION"></resource>
+        </input>
+        <output name_on_component="DIGITAL AUDIO OUT">
+            <audio_media type="optical_digital"></audio_media>
+        </output>
+        <output name_on_component="HEADPHONE">
+            <audio_media type="analog_minijack"></audio_media>
+        </output>
+        <bidirectional name_on_component="HDMI 1 (eARC)">
+            <combined_media>
+                <audio_media type="hdmi_audio"></audio_media>
+                <video_media type="hdmi"></video_media>
+            </combined_media>
+            <resource resource_type="AV_AMPLIFIER_FUNCTION"></resource>
+            <resource resource_type="AV_MONITOR_SINK"></resource>
+            <resource resource_type="AV_STEREOSPEAKERS_SINK"></resource>
+            <resource resource_type="AV_VOLUMECONTROL_FUNCTION"></resource>
+        </bidirectional>
+        <internal name_on_component="Apps">
+            <audio_media></audio_media>
+            <video_media></video_media>
+            <resource resource_type="AV_EXTERNALMEDIASERVER_SOURCE"></resource>
+            <resource resource_type="AV_AMPLIFIER_FUNCTION"></resource>
+            <resource resource_type="AV_MONITOR_SINK"></resource>
+            <resource resource_type="AV_STEREOSPEAKERS_SINK"></resource>
+            <resource resource_type="AV_VOLUMECONTROL_FUNCTION"></resource>
+        </internal>
+    </media_interfaces>
+    <state_variable_list>
+        <state_variable name="Power_current_power_HD Monitor" state_center_binding="CurrentPowerStatus" state_center_type="string" owning_logical_component="HD Monitor">OFF</state_variable>
+        <state_variable name="Mute_current_mute_HD Monitor" state_center_binding="CurrentMuteStatus" state_center_type="string" owning_logical_component="HD Monitor">OFF</state_variable>
+        <volume_state_variable name="Volume_current_volume_HD Monitor" state_center_binding="CurrentVolume" state_center_type="integer" owning_logical_component="HD Monitor" granularity="1" min_value="0" max_value="100">0</volume_state_variable>
+    </state_variable_list>
+    <logical_component logical_component_name="HD Monitor">
+        <implementation>
+            <input name_on_component="HDMI 1">
+                <action_to_select name="SelectInputHDMI 1"></action_to_select>
+            </input>
+            <output name_on_component="HDMI 1 (eARC)"></output>
+            <output name_on_component="DIGITAL AUDIO OUT"></output>
+            <output name_on_component="HEADPHONE"></output>
+        </implementation>
+        <implementation>
+            <input name_on_component="HDMI 1 (eARC)">
+                <action_to_select name="SelectInputHDMI 1"></action_to_select>
+            </input>
+            <output name_on_component="HDMI 1 (eARC)"></output>
+            <output name_on_component="DIGITAL AUDIO OUT"></output>
+            <output name_on_component="HEADPHONE"></output>
+        </implementation>
+        <implementation>
+            <input name_on_component="HDMI 2">
+                <action_to_select name="SelectInputHDMI 2"></action_to_select>
+            </input>
+            <output name_on_component="HDMI 1 (eARC)"></output>
+            <output name_on_component="DIGITAL AUDIO OUT"></output>
+            <output name_on_component="HEADPHONE"></output>
+        </implementation>
+        <implementation>
+            <input name_on_component="HDMI 3">
+                <action_to_select name="SelectInputHDMI 3"></action_to_select>
+            </input>
+            <output name_on_component="HDMI 1 (eARC)"></output>
+            <output name_on_component="DIGITAL AUDIO OUT"></output>
+            <output name_on_component="HEADPHONE"></output>
+        </implementation>
+        <implementation>
+            <input name_on_component="HDMI 4">
+                <action_to_select name="SelectInputHDMI 4"></action_to_select>
+            </input>
+            <output name_on_component="HDMI 1 (eARC)"></output>
+            <output name_on_component="DIGITAL AUDIO OUT"></output>
+            <output name_on_component="HEADPHONE"></output>
+        </implementation>
+        <implementation>
+            <input name_on_component="ANT/CABLE">
+                <action_to_select name="SelectInputANT/CABLE"></action_to_select>
+            </input>
+            <output name_on_component="HDMI 1 (eARC)"></output>
+            <output name_on_component="DIGITAL AUDIO OUT"></output>
+            <output name_on_component="HEADPHONE"></output>
+        </implementation>
+        <implementation>
+            <input name_on_component="AV IN">
+                <action_to_select name="SelectInputAV IN"></action_to_select>
+            </input>
+            <output name_on_component="HDMI 1 (eARC)"></output>
+            <output name_on_component="DIGITAL AUDIO OUT"></output>
+            <output name_on_component="HEADPHONE"></output>
+        </implementation>
+        <implementation>
+            <output name_on_component="HDMI 1 (eARC)"></output>
+            <output name_on_component="DIGITAL AUDIO OUT"></output>
+            <output name_on_component="HEADPHONE"></output>
+            <internal name_on_component="Apps">
+                <action_to_select name="SelectInternalInputApps"></action_to_select>
+            </internal>
+        </implementation>
+        <universal_component_actions>
+            <action name="PowerOn">
+                <execute_on_state_variable_condition name="Power_current_power_HD Monitor" test_condition="not_equal">ON</execute_on_state_variable_condition>
+                <update_state_variable name="Power_current_power_HD Monitor" update_type="set" update_source="constant">ON</update_state_variable>
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016003E00160014001600140016001400160014001600140016003E0016003E001600140016003E0016003E0016003E0016003E0016003E0016003E0016001400160014001600140016003E0016003E0016003E00160014001600140016003E0016003E0016003E0016001400160014001600140016003E001605F5015600540016076C00000000</command_string>
+                        <delay ms_delay="8000"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="PowerOff">
+                <execute_on_state_variable_condition name="Power_current_power_HD Monitor" test_condition="not_equal">OFF</execute_on_state_variable_condition>
+                <update_state_variable name="Power_current_power_HD Monitor" update_type="set" update_source="constant">OFF</update_state_variable>
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016003F00160014001600140016001400160014001600140016003F0016003F001600140016003F0016003F0016003F0016003F0016003F001600140016003F00160014001600140016003F0016003F0016003F001600140016003F001600140016003F0016003F0016001400160014001600140016003F001605F5015600540016076C00000000</command_string>
+                        <delay ms_delay="3000"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="PowerToggle">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E001600140016003E0016003E0016003E001600140016001400160014001600140016003E00160014001600140016001400160014001600140016003E0016003E0016003E0016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="8000"></delay>
+                    </command>
+                </command_interface>
+            </action>
+        </universal_component_actions>
+        <resource_component_actions resource_type="AV_TV_SOURCE">
+            <action name="ChannelAnalogSelect">
+                <action_argument name="ChannelNumber"/>
+                <command_interface interface="ir">
+                    <command response_required="yes">
+                        <command_string macro_name="ChannelAnalogSelectUsingUnpaddedDigits" data_length="3"/>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="ChannelAnalogDown">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E0016003E001600140016003E00160014001600140016003E0016001400160014001600140016003E001600140016003E0016003E001600140016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="ChannelAnalogUp">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E001600140016003E001600140016003E00160014001600140016003E001600140016003E001600140016003E001600140016003E0016003E001600140016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberOne">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberTwo">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E001600140016003E0016001400160014001600140016001400160014001600140016003E001600140016003E0016003E0016003E0016003E0016003E0016003E0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberThree">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E0016003E00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberFour">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003E0016003E0016003E0016003E0016003E0016003E001600150016003E00160015001600150016003E00160015001600150016001500160015001600150016003E0016003E001600150016003E0016003E0016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberFive">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F0016003F001600140016003F0016001400160014001600140016001400160014001600140016003F001600140016003F0016003F0016003F0016003F0016003F0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberSix">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F001600140016003F0016003F00160014001600140016001400160014001600140016003F00160014001600140016003F0016003F0016003F0016003F0016003F00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberSeven">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E0016003E0016003E00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberEight">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F0016001400160014001600140016003F001600140016001400160014001600140016003F0016003F0016003F001600140016003F0016003F0016003F0016003F0016061E015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberNine">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E00160014001600140016003E00160014001600140016001400160014001600140016003E0016003E001600140016003E0016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberZero">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003E0016003E0016003E0016003E0016003E0016003E001600150016003E00160015001600150016001500160015001600150016001500160015001600150016003E0016003E0016003E0016003E0016003E0016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Guide">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E001600140016003E0016003E0016003E001600140016001400160014001600140016003E00160014001600140016001400160014001600140016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="OSDCursorUp">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003E0016003E0016003E0016003E0016003E0016003E001600150016003E001600150016003E0016003E001600150016003E0016001500160015001600150016003E00160015001600150016003E001600150016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="OSDCursorDown">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E0016003E0016003E001600140016003E0016001400160014001600140016001400160014001600140016003E001600140016003E0016003E0016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="OSDCursorLeft">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E00160014001600140016003E0016003E001600140016001400160014001600140016003E0016003E00160014001600140016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="OSDCursorRight">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F0016001400160014001600140016003F0016003F0016001400160014001600140016003F0016003F0016003F00160014001600140016003F0016003F0016003F0016061E015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Select">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E001600140016003E001600140016003E001600140016001400160014001600140016003E001600140016003E001600140016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="LastChannel">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F0016003F0016003F001600140016003F0016001400160014001600140016001400160014001600140016003F001600140016003F0016003F0016003F0016003F0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Exit">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016001400160014001600140016003E00160014001600140016003E001600140016003E0016003E0016003E001600140016003E0016003E001600140016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Play">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AC00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016001400160014001600140016003E001600140016003E001600140016003E0016003E0016003E0016003E001600140016003E001600140016003E0016001400160627015600550016077500000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Stop">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E001600140016003E001600140016003E0016003E001600140016003E001600140016003E001600140016003E00160014001600140016003E001600140016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Pause">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E00160014001600140016003E001600140016003E001600140016003E001600140016003E0016003E001600140016003E001600140016003E0016001400160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Rewind">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016001400160014001600140016003E0016003E001600140016003E001600140016003E0016003E0016003E00160014001600140016003E001600140016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="FastForward">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F0016003F00160014001600140016003F0016003F001600140016003F00160014001600140016003F0016003F00160014001600140016003F001600140016003F0016061E015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Menu">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E00160014001600140016003E001600140016003E0016001400160014001600140016003E0016003E001600140016003E001600140016003E0016003E0016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="ATriangle">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E00160014001600140016003E001600140016003E001600140016003E001600140016003E0016003E001600140016003E001600140016003E001600140016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="BSquare">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E001600140016003E001600140016003E001600140016003E00160014001600140016003E001600140016003E001600140016003E001600140016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="CCircle">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003E0016003E0016003E0016003E0016003E0016003E001600150016003E001600150016003E00160015001600150016003E001600150016003E001600150016003E001600150016003E0016003E001600150016003E001600150016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="DDiamond">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F0016003F0016003F00160014001600140016003F001600140016003F0016001400160014001600140016003F0016003F001600140016003F001600140016003F0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="MyDVR">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F0016003F001600140016001400160014001600140016003F0016001400160014001600140016003F0016003F0016003F0016003F001600140016003F0016003F0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+        </resource_component_actions>
+        <resource_component_actions resource_type="AV_EXTERNALMEDIASERVER_SOURCE">
+            <action name="Home">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E00160014001600140016001400160014001600140016003E00160014001600140016003E0016003E0016003E0016003E0016003E001600140016003E0016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Movies">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E001600140016003E0016003E001600140016003E0016001400160014001600140016003E00160014001600140016003E001600140016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Select">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003F0016003F0016003F0016003F0016003F0016003F001600150016003F0016003F001600150016003F001600150016003F001600150016001500160015001600150016003F001600150016003F001600150016003F0016003F0016003F00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="OSDCursorUp">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E001600140016003E0016003E001600140016003E0016001400160014001600140016003E00160014001600140016003E001600140016003E0016003E0016003E00160627015600550016077500000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="OSDCursorDown">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E0016003E0016003E001600140016003E0016001400160014001600140016001400160014001600140016003E001600140016003E0016003E0016003E00160620015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="OSDCursorLeft">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003F0016003F0016003F0016003F0016003F0016003F001600150016003F0016003F00160015001600150016003F0016003F001600150016001500160015001600150016003F0016003F00160015001600150016003F0016003F0016003F00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="OSDCursorRight">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F0016001400160014001600140016003F0016003F0016001400160014001600140016003F0016003F0016003F00160014001600140016003F0016003F0016003F0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Exit">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F0016001400160014001600140016003F00160014001600140016003F001600140016003F0016003F0016003F001600140016003F0016003F001600140016003F0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Play">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016001400160014001600140016003E001600140016003E001600140016003E0016003E0016003E0016003E001600140016003E001600140016003E0016001400160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Pause">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F0016003F00160014001600140016003F001600140016003F001600140016003F001600140016003F0016003F001600140016003F001600140016003F0016001400160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Stop">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F001600140016003F001600140016003F0016003F001600140016003F001600140016003F001600140016003F00160014001600140016003F001600140016003F0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="ScanUp">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E00160014001600140016003E0016003E001600140016003E00160014001600140016003E0016003E00160014001600140016003E001600140016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="ScanDown">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016001400160014001600140016003E0016003E001600140016003E001600140016003E0016003E0016003E00160014001600140016003E001600140016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Menu">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E00160014001600140016003E001600140016003E0016001400160014001600140016003E0016003E001600140016003E001600140016003E0016003E0016003E0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Subtitle">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F0016003F0016003F0016003F0016003F0016003F00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberZero">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E0016003E0016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberOne">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E0016003E0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberTwo">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003E0016003E0016003E0016003E0016003E0016003E001600150016003E001600150016003E0016001500160015001600150016001500160015001600150016003E001600150016003E0016003E0016003E0016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberThree">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003E0016003E0016003E0016003E0016003E0016003E001600150016003E0016003E0016003E00160015001600150016001500160015001600150016001500160015001600150016003E0016003E0016003E0016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberFour">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E00160014001600140016003E00160014001600140016001400160014001600140016003E0016003E001600140016003E0016003E0016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberFive">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E001600140016003E0016001400160014001600140016001400160014001600140016003E001600140016003E0016003E0016003E0016003E0016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberSix">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E001600140016003E0016003E00160014001600140016001400160014001600140016003E00160014001600140016003E0016003E0016003E0016003E0016003E0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberSeven">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E0016003E0016003E00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberEight">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016001400160014001600140016003E001600140016001400160014001600140016003E0016003E0016003E001600140016003E0016003E0016003E0016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="NumberNine">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E00160014001600140016003E00160014001600140016001400160014001600140016003E0016003E001600140016003E0016003E0016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Red">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E001600140016003E00160014001600140016003E001600140016003E001600140016003E001600140016003E0016003E001600140016003E001600140016003E00160620015600530016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Blue">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003E0016003E0016003E0016003E0016003E0016003E001600150016003E0016003E001600150016003E001600150016003E001600150016003E00160015001600150016003E001600150016003E001600150016003E001600150016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Green">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E0016003E00160014001600140016003E001600140016003E0016001400160014001600140016003E0016003E001600140016003E001600140016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Yellow">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F00160014001600140016003F001600140016003F001600140016003F001600140016003F0016003F001600140016003F001600140016003F001600140016003F0016061E015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+        </resource_component_actions>
+        <resource_component_actions resource_type="AV_VOLUMECONTROL_FUNCTION">
+            <action name="DecreaseVolume">
+                <update_volume_variables name="Volume_current_volume_HD Monitor" update_type="decrement" update_source="constant">1</update_volume_variables>
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160015001600150016001500160015001600150016001500160015001600150016003E0016003E0016003E0016003E0016003E0016003E001600150016003E0016003E0016003E001600150016001500160015001600150016003E0016001500160015001600150016003E0016003E0016003E0016003E001600150016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="IncreaseVolume">
+                <update_volume_variables name="Volume_current_volume_HD Monitor" update_type="increment" update_source="constant">1</update_volume_variables>
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E00160014001600140016003E0016001400160014001600140016003E001600140016003E0016003E001600140016003E0016003E0016003E001600140016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="MuteOff">
+                <execute_on_state_variable_condition name="Mute_current_mute_HD Monitor" test_condition="not_equal">OFF</execute_on_state_variable_condition>
+                <update_state_variable name="Mute_current_mute_HD Monitor" update_type="set" update_source="constant">OFF</update_state_variable>
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003F0016003F0016003F0016003F0016003F0016003F001600150016003F001600150016003F0016003F0016003F001600150016001500160015001600150016003F0016001500160015001600150016003F0016003F0016003F0016003F00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="MuteOn">
+                <execute_on_state_variable_condition name="Mute_current_mute_HD Monitor" test_condition="not_equal">ON</execute_on_state_variable_condition>
+                <update_state_variable name="Mute_current_mute_HD Monitor" update_type="set" update_source="constant">ON</update_state_variable>
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F001600140016003F0016003F0016003F001600140016001400160014001600140016003F0016001400160014001600140016003F0016003F0016003F0016003F0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+        </resource_component_actions>
+        <custom_component_actions>
+            <action name="SelectInputHDMI 1">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016003F00160014001600140016001400160014001600140016003F0016003F001600140016003F0016003F0016003F0016003F0016003F00160014001600140016003F0016003F0016003F0016003F0016003F001600140016003F0016003F00160014001600140016001400160014001600140016003F001605F8015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="SelectInputHDMI 2">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016003E00160014001600140016001400160014001600140016003E0016003E001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E0016003E0016003E0016003E00160014001600140016003E00160014001600140016001400160014001600140016003E001605F5015600530016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="SelectInputHDMI 3">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016003E00160014001600140016001400160014001600140016003E0016003E001600140016003E0016003E0016003E0016003E0016003E001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016001400160014001600140016001400160014001600140016003E001605F8015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="SelectInputHDMI 4">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016003F00160014001600140016001400160014001600140016003F0016003F001600140016003F0016003F0016003F0016003F0016003F0016003F0016003F0016003F0016003F0016003F0016003F0016003F00160014001600140016001400160014001600140016001400160014001600140016003F001605F7015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="SelectInputANT/CABLE">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016003E00160015001600150016001500160015001600150016003E0016003E001600150016003E0016003E0016003E0016003E0016003E00160015001600150016003E001600150016003E0016003E0016003E001600150016003E0016003E001600150016003E0016001500160015001600150016003E001605F8015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="SelectInputAV IN">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016003F00160014001600140016001400160014001600140016003F0016003F001600140016003F0016003F0016003F0016003F0016003F001600140016003F0016003F001600140016003F0016003F0016003F001600140016003F00160014001600140016003F0016001400160014001600140016003F001605F5015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="SelectInternalInputApps">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016001400160014001600140016001400160014001600140016003E001600140016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="TeleText">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003F0016003F0016003F0016003F0016003F0016003F001600150016003F0016003F001600150016003F0016001500160015001600150016003F00160015001600150016003F001600150016003F0016003F0016003F001600150016003F00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="List">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E001600140016001400160014001600140016003E0016001400160014001600140016003E0016003E0016003E0016003E001600140016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Netflix">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E001600140016003E0016003E001600140016003E0016001400160014001600140016003E00160014001600140016003E001600140016003E0016003E00160622015600540016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="AudioOnly">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F001600140016003F0016003F0016003F0016003F0016003F001600140016003F0016003F00160014001600140016001400160014001600140016003F0016001400160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="ChannelList">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160015001600150016001500160015001600150016001500160015001600150016003F0016003F0016003F0016003F0016003F0016003F001600150016003F0016003F001600150016001500160015001600150016003F0016001500160015001600150016003F0016003F0016003F0016003F001600150016003F0016003F00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Hi-DMP">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016003E00160014001600140016001400160014001600140016003E0016003E001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E0016003E00160014001600140016001400160014001600140016003E00160014001600140016003E0016003E0016003E0016003E001605F7015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="InputNext">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003F0016003F0016003F0016003F0016003F0016003F001600140016003F001600140016003F00160014001600140016003F0016001400160014001600140016003F001600140016003F0016003F001600140016003F0016003F0016003F0016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="Media">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003E0016003E0016003E0016003E0016003E0016003E001600150016003E0016003E0016003E00160015001600150016003E0016003E001600150016001500160015001600150016003E0016003E00160015001600150016003E0016003E00160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="PrimeVideo">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160015001600150016001500160015001600150016001500160015001600150016003F0016003F0016003F0016003F0016003F0016003F001600150016003F0016001500160015001600150016003F0016001500160015001600150016003F0016003F0016003F0016003F001600150016003F0016003F0016003F0016001500160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="RakutenTV">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AB00160015001600150016001500160015001600150016001500160015001600150016003E0016003E0016003E0016003E0016003E0016003E001600150016003E0016003E00160015001600150016003E0016003E001600150016003E0016003E001600150016003E0016003E00160015001600150016003E001600150016001500160621015600550016076F00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="YouTube">
+                <command_interface interface="ir">
+                    <command response_required="no">
+                        <command_string type="hex">0000000000009470015600AA00160014001600140016001400160014001600140016001400160014001600140016003E0016003E0016003E0016003E0016003E0016003E001600140016003E001600140016003E001600140016003E001600140016003E001600140016003E0016003E001600140016003E001600140016003E001600140016003E001600140016061F015600540016076C00000000</command_string>
+                        <delay ms_delay="200"></delay>
+                    </command>
+                </command_interface>
+            </action>
+        </custom_component_actions>
+    </logical_component>
+</component>
