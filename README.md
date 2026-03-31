@@ -100,7 +100,7 @@ You should see the TV listed (e.g., "Living Room TV"). If not, the TV may need a
 ### 2.1 SSH into the Smart Host
 
 ```bash
-ssh savant@<smart-host-ip>
+ssh RPM@<smart-host-ip>
 ```
 
 Replace `<smart-host-ip>` with your Smart Host's IP address.
@@ -117,7 +117,7 @@ If `git` is not available on the host, download the ZIP from GitHub on your Mac 
 
 ```bash
 # On your Mac:
-scp -r ~/Downloads/hisense-mqtt-bridge-main savant@<smart-host-ip>:/tmp/hisense-mqtt-bridge
+scp -r ~/Downloads/hisense-mqtt-bridge-main RPM@<smart-host-ip>:/tmp/hisense-mqtt-bridge
 ```
 
 ### 2.3 Run the Installer
@@ -235,7 +235,7 @@ The component profile tells Savant how to talk to the bridge. This file goes int
 From your Mac terminal:
 
 ```bash
-scp savant@<smart-host-ip>:/tmp/hisense-mqtt-bridge/savant/hisense_100u65qf.xml ~/Desktop/
+scp RPM@<smart-host-ip>:/tmp/hisense-mqtt-bridge/savant/hisense_100u65qf.xml ~/Desktop/
 ```
 
 ### 4.2 Install into Blueprint
