@@ -1,6 +1,6 @@
-# Hisense 100U65QF MQTT Bridge - Installation Guide
+# Hisense 100U65QF Android TV Bridge - Installation Guide
 
-A step-by-step guide for Savant dealers to install the Hisense TV MQTT bridge driver on a Savant Smart Host.
+A step-by-step guide for Savant dealers to install the Hisense TV bridge driver on a Savant Smart Host.
 
 ---
 
@@ -9,23 +9,22 @@ A step-by-step guide for Savant dealers to install the Hisense TV MQTT bridge dr
 1. [What This Does](#what-this-does)
 2. [What You Need Before Starting](#what-you-need-before-starting)
 3. [Part 1: Network Setup](#part-1-network-setup)
-4. [Part 2: Download the Client Certificates](#part-2-download-the-client-certificates)
-5. [Part 3: Install the Bridge Service on the Smart Host](#part-3-install-the-bridge-service-on-the-smart-host)
-6. [Part 4: Pair the Bridge with the TV](#part-4-pair-the-bridge-with-the-tv)
-7. [Part 5: Install the Savant Component Profile](#part-5-install-the-savant-component-profile)
-8. [Part 6: Configure in Blueprint](#part-6-configure-in-blueprint)
-9. [Part 7: Verify Everything Works](#part-7-verify-everything-works)
-10. [Troubleshooting](#troubleshooting)
-11. [Updating the Driver](#updating-the-driver)
-12. [Uninstalling](#uninstalling)
+4. [Part 2: Install the Bridge Service on the Smart Host](#part-2-install-the-bridge-service-on-the-smart-host)
+5. [Part 3: Pair the Bridge with the TV](#part-3-pair-the-bridge-with-the-tv)
+6. [Part 4: Install the Savant Component Profile](#part-4-install-the-savant-component-profile)
+7. [Part 5: Configure in Blueprint](#part-5-configure-in-blueprint)
+8. [Part 6: Verify Everything Works](#part-6-verify-everything-works)
+9. [Troubleshooting](#troubleshooting)
+10. [Updating the Driver](#updating-the-driver)
+11. [Uninstalling](#uninstalling)
 
 ---
 
 ## What This Does
 
-The Hisense 100U65QF TV has a built-in MQTT broker that allows network-based control (power, volume, input selection, navigation). Savant does not natively speak MQTT, so this driver installs a small bridge service on the Smart Host that translates between Savant's HTTP commands and the TV's MQTT protocol.
+The Hisense 100U65QF is an Android TV-based laser TV that supports the Android TV Remote v2 protocol for network control (power, volume, input selection, navigation). Savant does not natively speak this protocol, so this driver installs a small bridge service on the Smart Host that translates between Savant's HTTP commands and the TV's Android TV Remote protocol.
 
-**The result:** The TV appears as a native device in Blueprint with full two-way control -- real-time volume feedback, power state, input status, and absolute volume control (not just up/down).
+**The result:** The TV appears as a native device in Blueprint with full two-way control -- real-time volume feedback, power state, and input status.
 
 **Architecture:**
 
@@ -33,11 +32,13 @@ The Hisense 100U65QF TV has a built-in MQTT broker that allows network-based con
 Savant App / Touchscreen
         |
    Savant Component Engine
-        |  (HTTP on localhost)
+        |  (HTTP on localhost:8642)
    Bridge Service (on Smart Host)
-        |  (MQTT over TLS)
+        |  (Android TV Remote v2 on port 6466)
    Hisense 100U65QF TV
 ```
+
+**Note:** This TV uses a Bluetooth remote and does not have an IR receiver. IR control is not available. All control is via the network.
 
 ---
 
@@ -49,8 +50,8 @@ Savant App / Touchscreen
 - [ ] Python 3.8 or later on the Smart Host (check with `python3 --version` over SSH)
 - [ ] Hisense 100U65QF TV on the same network as the Smart Host
 - [ ] TV's MAC address (found in TV Settings > Network > About, or on a sticker on the back)
-- [ ] A laptop or phone near the TV to read the PIN code during pairing
-- [ ] The TV must be **powered on** during installation and pairing
+- [ ] A laptop or phone near the TV to read the pairing code during setup
+- [ ] The TV must be **fully powered on** (not standby) during installation and pairing
 
 ---
 
@@ -66,13 +67,13 @@ The TV needs a fixed IP address so the bridge can always find it. Do this in you
 
 2. In your router's admin panel, create a DHCP reservation:
    - **MAC address:** The TV's MAC (format: `AA:BB:CC:DD:EE:FF`)
-   - **Reserved IP:** Choose an available static IP on your LAN (e.g., `192.168.1.50`)
+   - **Reserved IP:** Choose an available static IP on your LAN (e.g., `192.168.1.125`)
 
 3. Restart the TV's network connection (or reboot the TV) so it picks up the reservation.
 
 4. Verify by pinging from the Smart Host:
    ```bash
-   ping 192.168.1.50
+   ping 192.168.1.125
    ```
    You should get replies.
 
@@ -82,38 +83,29 @@ The Smart Host and TV **must be on the same VLAN / network segment**. Wake-on-LA
 
 If the Smart Host and TV are on different VLANs, move one of them or configure a WOL relay on your router.
 
----
+### 1.3 Verify the TV's Android TV Remote Service
 
-## Part 2: Download the Client Certificates
+The TV must be advertising the Android TV Remote v2 service. You can verify from a Mac on the same network:
 
-The Hisense 100U65QF requires mutual TLS authentication. You need client certificate files from the Hisense RemoteNOW app.
+```bash
+dns-sd -B _androidtvremote2._tcp local.
+```
 
-1. Download the certificate archive from:
-   **https://github.com/d3nd3/Hisense-mqtt-keyfiles**
-
-   Click the green "Code" button > "Download ZIP", or clone the repo.
-
-2. Inside the archive, find these two files:
-   - `rcm_certchain_pem.cer` (client certificate)
-   - `rcm_pem_privkey.pkcs8` (client private key)
-
-   They may be inside a `hi_keys.zip` file within the repo -- extract that too.
-
-3. Keep these files handy. You will copy them to the Smart Host in Part 3.
+You should see the TV listed (e.g., "Living Room TV"). If not, the TV may need a firmware update or may not support this protocol.
 
 ---
 
-## Part 3: Install the Bridge Service on the Smart Host
+## Part 2: Install the Bridge Service on the Smart Host
 
-### 3.1 SSH into the Smart Host
+### 2.1 SSH into the Smart Host
 
 ```bash
 ssh savant@<smart-host-ip>
 ```
 
-Replace `<smart-host-ip>` with your Smart Host's IP address. The default username is typically `savant` -- use whatever credentials your system is configured with.
+Replace `<smart-host-ip>` with your Smart Host's IP address.
 
-### 3.2 Download the Driver Package
+### 2.2 Download the Driver Package
 
 ```bash
 cd /tmp
@@ -128,38 +120,7 @@ If `git` is not available on the host, download the ZIP from GitHub on your Mac 
 scp -r ~/Downloads/hisense-mqtt-bridge-main savant@<smart-host-ip>:/tmp/hisense-mqtt-bridge
 ```
 
-### 3.3 Copy the Certificates
-
-Copy the certificate files you downloaded in Part 2 into the `certs/` folder:
-
-```bash
-# If you downloaded certs to your Mac:
-# Run this on your Mac (not the Smart Host):
-scp rcm_certchain_pem.cer savant@<smart-host-ip>:/tmp/hisense-mqtt-bridge/certs/
-scp rcm_pem_privkey.pkcs8 savant@<smart-host-ip>:/tmp/hisense-mqtt-bridge/certs/
-```
-
-Or if you're already on the Smart Host and the certs are there:
-
-```bash
-cp /path/to/rcm_certchain_pem.cer /tmp/hisense-mqtt-bridge/certs/
-cp /path/to/rcm_pem_privkey.pkcs8 /tmp/hisense-mqtt-bridge/certs/
-```
-
-### 3.4 Verify Certificates Are in Place
-
-```bash
-ls -la /tmp/hisense-mqtt-bridge/certs/
-```
-
-You should see:
-
-```
-rcm_certchain_pem.cer
-rcm_pem_privkey.pkcs8
-```
-
-### 3.5 Run the Installer
+### 2.3 Run the Installer
 
 ```bash
 cd /tmp/hisense-mqtt-bridge
@@ -176,13 +137,15 @@ The installer will:
 **When prompted:**
 
 ```
-TV IP address: 192.168.1.50
+TV IP address: 192.168.1.125
 TV MAC address (AA:BB:CC:DD:EE:FF): AA:BB:CC:DD:EE:FF
 ```
 
 Enter the static IP you set up in Part 1 and the TV's MAC address.
 
-### 3.6 Verify the Service is Running
+**Note:** No certificates need to be downloaded or installed. The bridge automatically generates its own TLS certificates on first run.
+
+### 2.4 Verify the Service is Running
 
 ```bash
 sudo systemctl status hisense-bridge
@@ -196,13 +159,13 @@ sudo journalctl -u hisense-bridge -n 50
 
 ---
 
-## Part 4: Pair the Bridge with the TV
+## Part 3: Pair the Bridge with the TV
 
 This is a one-time step. The TV needs to authorize the bridge to control it.
 
-**The TV must be powered ON for this step.**
+**The TV must be fully powered ON (home screen visible) for this step.**
 
-### 4.1 Initiate Pairing
+### 3.1 Initiate Pairing
 
 From the Smart Host terminal:
 
@@ -213,25 +176,25 @@ curl -X PUT http://localhost:8642/api/auth/pair
 You should see:
 
 ```json
-{"message":"Check TV for PIN code","status":"ok"}
+{"message":"Check TV for pairing code","status":"ok"}
 ```
 
-### 4.2 Read the PIN from the TV
+### 3.2 Read the Code from the TV
 
-Look at the TV screen. A 4-digit PIN code will be displayed. Write it down.
+Look at the TV screen. A **6-character hex code** will be displayed. Write it down.
 
-If no PIN appears:
-- Make sure the TV is powered on (not in standby)
+If no code appears:
+- Make sure the TV is fully powered on (screen showing, not in standby)
 - Check the bridge logs: `sudo journalctl -u hisense-bridge -n 20`
-- The bridge may not be connected yet -- wait 30 seconds and try again
+- Wait 30 seconds and try again
 
-### 4.3 Confirm the PIN
+### 3.3 Confirm the Code
 
 ```bash
-curl -X PUT "http://localhost:8642/api/auth/confirm?pin=1234"
+curl -X PUT "http://localhost:8642/api/auth/confirm?pin=A1B2C3"
 ```
 
-Replace `1234` with the actual PIN shown on your TV.
+Replace `A1B2C3` with the actual 6-character code shown on your TV.
 
 You should see:
 
@@ -239,7 +202,7 @@ You should see:
 {"status":"ok"}
 ```
 
-### 4.4 Test the Connection
+### 3.4 Test the Connection
 
 ```bash
 curl http://localhost:8642/api/state
@@ -248,26 +211,26 @@ curl http://localhost:8642/api/state
 You should see something like:
 
 ```json
-{"input":"HDMI 1","mute":"OFF","power":"ON","volume":15}
+{"input":"com.google.android.tvlauncher","mute":"OFF","power":"ON","volume":15}
 ```
 
 If you see real values from the TV, pairing is successful.
 
-### 4.5 Quick Test -- Change the Volume
+### 3.5 Quick Test -- Change the Volume
 
 ```bash
-curl -X PUT "http://localhost:8642/api/volume/set?value=20"
+curl -X PUT http://localhost:8642/api/volume/up
 ```
 
-The TV's volume should change to 20. If it does, the bridge is working.
+The TV's volume should increase by one step. If it does, the bridge is working.
 
 ---
 
-## Part 5: Install the Savant Component Profile
+## Part 4: Install the Savant Component Profile
 
 The component profile tells Savant how to talk to the bridge. This file goes into Blueprint on your Mac.
 
-### 5.1 Copy the Profile to Your Mac
+### 4.1 Copy the Profile to Your Mac
 
 From your Mac terminal:
 
@@ -275,10 +238,7 @@ From your Mac terminal:
 scp savant@<smart-host-ip>:/tmp/hisense-mqtt-bridge/savant/hisense_100u65qf.xml ~/Desktop/
 ```
 
-Or download it directly from GitHub:
-**https://github.com/lylamcbooba/hisense-mqtt-bridge/blob/main/savant/hisense_100u65qf.xml**
-
-### 5.2 Install into Blueprint
+### 4.2 Install into Blueprint
 
 Copy the XML file to Blueprint's component profiles directory:
 
@@ -292,15 +252,15 @@ cp ~/Desktop/hisense_100u65qf.xml ~/Library/Application\ Support/Savant/.SavantO
 ~/Library/Application Support/Savant/.SavantOS <version>/RPMInstallLink/Library/Application Support/RacePointMedia/systemConfig.rpmConfig/componentProfiles/
 ```
 
-### 5.3 Restart Blueprint
+### 4.3 Restart Blueprint
 
 Close and reopen Blueprint so it picks up the new profile.
 
 ---
 
-## Part 6: Configure in Blueprint
+## Part 5: Configure in Blueprint
 
-### 6.1 Add the TV as a Component
+### 5.1 Add the TV as a Component
 
 1. Open your Blueprint project
 2. Go to the **Components** tab
@@ -308,7 +268,7 @@ Close and reopen Blueprint so it picks up the new profile.
 4. Search for manufacturer: **Hisense**, model: **100U65QF**
 5. Select it and click **Add**
 
-### 6.2 Configure the Network Connection
+### 5.2 Configure the Network Connection
 
 1. Select the newly added Hisense 100U65QF component
 2. In the **Control** section, set:
@@ -318,7 +278,7 @@ Close and reopen Blueprint so it picks up the new profile.
 
 **Important:** The IP is `127.0.0.1` (localhost), NOT the TV's IP. The Savant component engine talks to the bridge on the same host; the bridge talks to the TV.
 
-### 6.3 Assign to a Room
+### 5.3 Assign to a Room
 
 1. Drag the component into the appropriate room
 2. Configure the HDMI inputs to match your physical connections:
@@ -326,7 +286,7 @@ Close and reopen Blueprint so it picks up the new profile.
    - **HDMI 2-4:** Your sources (Apple TV, cable box, game console, etc.)
 3. Connect the media paths in Blueprint's wiring view
 
-### 6.4 Deploy to Host
+### 5.4 Deploy to Host
 
 1. Click **Deploy** in Blueprint
 2. Select your Smart Host
@@ -334,9 +294,9 @@ Close and reopen Blueprint so it picks up the new profile.
 
 ---
 
-## Part 7: Verify Everything Works
+## Part 6: Verify Everything Works
 
-### 7.1 Test from the Savant App
+### 6.1 Test from the Savant App
 
 1. Open the Savant app on an iPad or iPhone
 2. Navigate to the room with the TV
@@ -344,14 +304,14 @@ Close and reopen Blueprint so it picks up the new profile.
 
 | Function | What to Test | Expected Result |
 |----------|-------------|-----------------|
-| Power On | Tap power button when TV is off | TV turns on (may take 10-15 seconds) |
+| Power On | Tap power button when TV is off | TV turns on (may take 10-15 seconds via WOL) |
 | Power Off | Tap power button when TV is on | TV turns off |
 | Volume Up/Down | Use the volume slider or buttons | TV volume changes, slider reflects actual level |
 | Mute | Tap mute button | TV mutes/unmutes |
 | Input Switch | Select a different source | TV switches to that HDMI input |
 | Navigation | Use the arrow pad (if visible) | TV responds to up/down/left/right/OK |
 
-### 7.2 Test from the Command Line (Optional)
+### 6.2 Test from the Command Line (Optional)
 
 From the Smart Host:
 
@@ -368,8 +328,11 @@ curl -X PUT http://localhost:8642/api/power/off
 # Power on (uses Wake-on-LAN)
 curl -X PUT http://localhost:8642/api/power/on
 
-# Set volume to 25
-curl -X PUT "http://localhost:8642/api/volume/set?value=25"
+# Volume up
+curl -X PUT http://localhost:8642/api/volume/up
+
+# Volume down
+curl -X PUT http://localhost:8642/api/volume/down
 
 # Switch to HDMI 2
 curl -X PUT "http://localhost:8642/api/input/select?source=HDMI2"
@@ -379,6 +342,9 @@ curl -X PUT http://localhost:8642/api/nav/up
 
 # Press OK
 curl -X PUT http://localhost:8642/api/nav/ok
+
+# Go Home
+curl -X PUT http://localhost:8642/api/nav/home
 ```
 
 ---
@@ -394,7 +360,6 @@ sudo journalctl -u hisense-bridge -n 50
 
 **Common causes:**
 - Python 3 not installed: `sudo apt install python3 python3-venv`
-- Missing certificates: check `/opt/hisense-bridge/certs/` has both `.cer` and `.pkcs8` files
 - Port 8642 already in use: `sudo ss -tlnp | grep 8642`
 
 ### Bridge starts but can't connect to TV
@@ -404,18 +369,27 @@ curl http://localhost:8642/api/health
 ```
 
 If `tv_connected` is `false`:
-- Verify TV is powered on (not standby)
+- Verify TV is fully powered on (not standby -- the home screen must be visible)
 - Ping the TV: `ping <tv-ip>`
 - Check the TV IP in config: `sudo cat /opt/hisense-bridge/config.json`
-- Verify port 36669 is reachable: `nc -zv <tv-ip> 36669`
-- Check logs for TLS errors: `sudo journalctl -u hisense-bridge -n 50`
+- Verify Android TV Remote port is reachable: `nc <tv-ip> 6466`
+- The TV's Android TV Remote service only runs when the TV is fully on
+- Check logs: `sudo journalctl -u hisense-bridge -n 50`
 
-### Pairing fails / no PIN appears on TV
+### Pairing fails / no code appears on TV
 
-- The TV must be fully booted (not in standby)
+- The TV must be fully booted with the home screen visible (not in standby)
 - Try power cycling the TV completely (unplug for 10 seconds)
-- Some TVs only show the PIN for 30 seconds -- be ready to read it quickly
-- If the bridge was previously paired and the TV was factory reset, you need to re-pair
+- The code is displayed for a limited time -- be ready to read it quickly
+- If the bridge was previously paired and the TV was factory reset, delete the certs and re-pair:
+  ```bash
+  sudo rm /opt/hisense-bridge/certs/cert.pem /opt/hisense-bridge/certs/key.pem
+  sudo systemctl restart hisense-bridge
+  ```
+
+### "InvalidAuth" in logs
+
+The bridge needs to be paired (or re-paired) with the TV. Follow [Part 3](#part-3-pair-the-bridge-with-the-tv).
 
 ### Commands work from curl but not from Savant
 
@@ -426,36 +400,29 @@ If `tv_connected` is `false`:
 
 ### Volume slider doesn't reflect actual TV volume
 
-- The bridge polls state every 10 seconds. There may be a brief delay.
-- If state never updates, check that `response_required` is set to `yes` in the GetState action of the XML profile. (It should be if you downloaded the latest version.)
+- Volume state is pushed from the TV via callbacks. There should be minimal delay.
+- If state never updates, check that the bridge is connected: `curl http://localhost:8642/api/health`
 
 ### Power On doesn't work
 
 - Wake-on-LAN requires the TV and Smart Host to be on the **same VLAN**
 - Check the MAC address is correct in config: `sudo cat /opt/hisense-bridge/config.json`
-- Some TVs need WOL enabled in settings: **Settings > Network > Wake on LAN > On**
-- Power On typically takes 10-15 seconds -- the TV needs to boot before MQTT is available
+- The TV may need network standby enabled in settings
+- Power On typically takes 10-15 seconds -- the TV needs to boot before the bridge can reconnect
 
-### Input switching returns "Source map not available"
+### Input switching doesn't work
 
-The bridge hasn't learned the TV's source IDs yet. This happens automatically when the TV is first connected. If it persists:
+The default source map uses Android TV HDMI key codes. If these don't work on your TV model, you can customize the key codes in the config:
 
-1. Make sure the TV is powered on
-2. Wait for the bridge to connect (check `curl http://localhost:8642/api/health`)
-3. The source map is queried automatically on connect
-4. You can also manually configure it in `/opt/hisense-bridge/config.json`:
-   ```json
-   "source_map": {
-     "HDMI1": "0",
-     "HDMI2": "1",
-     "HDMI3": "2",
-     "HDMI4": "3",
-     "Apps": "4"
-   }
-   ```
-   Then restart: `sudo systemctl restart hisense-bridge`
+```bash
+sudo nano /opt/hisense-bridge/config.json
+```
 
-   **Note:** Source IDs vary by TV. The numbers above are examples. Use `curl http://localhost:8642/api/input/list` to see the actual mapping once the TV has been connected.
+Edit the `source_map` section. The available inputs and their key codes can vary by TV model. After editing, restart:
+
+```bash
+sudo systemctl restart hisense-bridge
+```
 
 ---
 
@@ -469,14 +436,11 @@ rm -rf hisense-mqtt-bridge
 git clone https://github.com/lylamcbooba/hisense-mqtt-bridge.git
 cd hisense-mqtt-bridge
 
-# Copy existing certs back in
-sudo cp /opt/hisense-bridge/certs/* certs/
-
-# Re-run installer (preserves existing config.json)
+# Re-run installer (preserves existing config.json and pairing certs)
 sudo bash deploy/install.sh
 ```
 
-Your configuration and pairing token are preserved -- you do not need to re-pair.
+Your configuration and pairing are preserved -- you do not need to re-pair.
 
 ---
 
@@ -505,5 +469,4 @@ Then remove `hisense_100u65qf.xml` from Blueprint's `componentProfiles` director
 ## Support
 
 - **Driver source code:** https://github.com/lylamcbooba/hisense-mqtt-bridge
-- **Hisense MQTT protocol reference:** https://github.com/Krazy998/mqtt-hisensetv
-- **Client certificates:** https://github.com/d3nd3/Hisense-mqtt-keyfiles
+- **Android TV Remote v2 protocol:** https://github.com/tronikos/androidtvremote2
