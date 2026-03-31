@@ -60,3 +60,168 @@ def test_source_map_from_config():
     cfg = _make_cfg()
     client = AndroidTVClient(cfg, cert_dir="/tmp/certs")
     assert client.source_map["HDMI1"] == "KEYCODE_TV_INPUT_HDMI_1"
+
+
+def test_send_key(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    client.send_key("KEYCODE_POWER")
+    mock.send_key_command.assert_called_once_with("KEYCODE_POWER")
+
+
+def test_send_key_when_disconnected():
+    from androidtv_client import AndroidTVClient
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    with pytest.raises(ConnectionError):
+        client.send_key("KEYCODE_POWER")
+
+
+def test_send_nav_up(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    client.send_nav("up")
+    mock.send_key_command.assert_called_once_with("KEYCODE_DPAD_UP")
+
+
+def test_send_nav_invalid():
+    from androidtv_client import AndroidTVClient
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._connected = True
+    with pytest.raises(ValueError, match="Invalid nav key"):
+        client.send_nav("jump")
+
+
+def test_volume_up(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    client.volume_up()
+    mock.send_key_command.assert_called_once_with("KEYCODE_VOLUME_UP")
+
+
+def test_volume_down(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    client.volume_down()
+    mock.send_key_command.assert_called_once_with("KEYCODE_VOLUME_DOWN")
+
+
+def test_set_volume_up(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    client._state["volume"] = 10
+    client.set_volume(15)
+    assert mock.send_key_command.call_count == 5
+    mock.send_key_command.assert_called_with("KEYCODE_VOLUME_UP")
+
+
+def test_set_volume_down(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    client._state["volume"] = 50
+    client.set_volume(45)
+    assert mock.send_key_command.call_count == 5
+    mock.send_key_command.assert_called_with("KEYCODE_VOLUME_DOWN")
+
+
+def test_set_volume_capped_at_max_steps(mock_remote):
+    from androidtv_client import AndroidTVClient, MAX_VOLUME_STEPS
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    client._state["volume"] = 0
+    client.set_volume(100)
+    assert mock.send_key_command.call_count == MAX_VOLUME_STEPS
+
+
+def test_mute_on_sends_toggle(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    client._state["mute"] = "OFF"
+    client.mute_on()
+    mock.send_key_command.assert_called_once_with("KEYCODE_VOLUME_MUTE")
+
+
+def test_mute_on_skips_if_already_muted(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    client._state["mute"] = "ON"
+    client.mute_on()
+    mock.send_key_command.assert_not_called()
+
+
+def test_mute_off_sends_toggle(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    client._state["mute"] = "ON"
+    client.mute_off()
+    mock.send_key_command.assert_called_once_with("KEYCODE_VOLUME_MUTE")
+
+
+def test_mute_off_skips_if_already_unmuted(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    client._state["mute"] = "OFF"
+    client.mute_off()
+    mock.send_key_command.assert_not_called()
+
+
+def test_change_source(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    client.change_source("HDMI2")
+    mock.send_key_command.assert_called_once_with("KEYCODE_TV_INPUT_HDMI_2")
+    assert client.state["input"] == "HDMI2"
+
+
+def test_change_source_unknown(mock_remote):
+    from androidtv_client import AndroidTVClient
+    mock, _ = mock_remote
+    client = AndroidTVClient(_make_cfg(), cert_dir="/tmp/certs")
+    client._remote = mock
+    client._connected = True
+    with pytest.raises(ValueError, match="Unknown source"):
+        client.change_source("HDMI99")
+
+
+def test_change_source_no_map():
+    from androidtv_client import AndroidTVClient
+    cfg = _make_cfg()
+    cfg["source_map"] = None
+    client = AndroidTVClient(cfg, cert_dir="/tmp/certs")
+    client._connected = True
+    with pytest.raises(RuntimeError, match="Source map not available"):
+        client.change_source("HDMI1")
