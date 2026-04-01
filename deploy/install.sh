@@ -22,12 +22,15 @@ sudo mkdir -p "$INSTALL_DIR"/{src,certs}
 # Copy source files
 sudo cp "$SCRIPT_DIR"/src/*.py "$INSTALL_DIR/src/"
 sudo cp "$SCRIPT_DIR"/requirements.txt "$INSTALL_DIR/"
+sudo mkdir -p "$INSTALL_DIR/wheels"
+sudo cp "$SCRIPT_DIR"/wheels/*.whl "$INSTALL_DIR/wheels/"
 
 # Create venv and install deps
 echo "Setting up Python virtual environment..."
 sudo python3 -m venv "$INSTALL_DIR/venv"
 sudo "$INSTALL_DIR/venv/bin/pip" install -q --upgrade pip
-sudo "$INSTALL_DIR/venv/bin/pip" install --extra-index-url https://www.piwheels.org/simple --prefer-binary -r "$INSTALL_DIR/requirements.txt"
+sudo "$INSTALL_DIR/venv/bin/pip" install -q "$INSTALL_DIR"/wheels/*.whl
+sudo "$INSTALL_DIR/venv/bin/pip" install -q --prefer-binary -r "$INSTALL_DIR/requirements.txt"
 
 # Configure TV connection
 if [ ! -f "$INSTALL_DIR/config.json" ]; then
