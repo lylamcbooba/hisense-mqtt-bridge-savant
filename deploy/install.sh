@@ -11,7 +11,8 @@ echo "=== Hisense Android TV Bridge Installer ==="
 # Create user if not exists
 if ! id "$SERVICE_USER" &>/dev/null; then
     echo "Creating service user: $SERVICE_USER"
-    sudo useradd --system --no-create-home --shell /usr/sbin/nologin "$SERVICE_USER"
+    NOLOGIN=$(command -v nologin 2>/dev/null || echo /bin/false)
+    sudo useradd --system --no-create-home --shell "$NOLOGIN" "$SERVICE_USER"
 fi
 
 # Create install directory
