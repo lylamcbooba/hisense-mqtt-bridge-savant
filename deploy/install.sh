@@ -27,7 +27,7 @@ sudo cp "$SCRIPT_DIR"/requirements.txt "$INSTALL_DIR/"
 echo "Setting up Python virtual environment..."
 sudo python3 -m venv "$INSTALL_DIR/venv"
 sudo "$INSTALL_DIR/venv/bin/pip" install -q --upgrade pip
-sudo "$INSTALL_DIR/venv/bin/pip" install -q --extra-index-url https://www.piwheels.org/simple -r "$INSTALL_DIR/requirements.txt"
+sudo "$INSTALL_DIR/venv/bin/pip" install --extra-index-url https://www.piwheels.org/simple --prefer-binary -r "$INSTALL_DIR/requirements.txt"
 
 # Configure TV connection
 if [ ! -f "$INSTALL_DIR/config.json" ]; then
