@@ -32,6 +32,15 @@ sudo "$INSTALL_DIR/venv/bin/pip" install -q --upgrade pip
 sudo "$INSTALL_DIR/venv/bin/pip" install -q "$INSTALL_DIR"/wheels/*.whl
 sudo "$INSTALL_DIR/venv/bin/pip" install -q --prefer-binary -r "$INSTALL_DIR/requirements.txt"
 
+# Fix SOABI mismatch: Savant's Python expects gnueabi but wheels are built for gnueabihf
+SOABI=$("$INSTALL_DIR/venv/bin/python3" -c "import sysconfig; print(sysconfig.get_config_var('SOABI'))")
+if [ "$SOABI" = "cpython-38-arm-linux-gnueabi" ]; then
+    echo "Fixing .so ABI tags for Savant host..."
+    find "$INSTALL_DIR/venv" -name "*.cpython-38-arm-linux-gnueabihf.so" | while read f; do
+        sudo mv "$f" "${f/gnueabihf/gnueabi}"
+    done
+fi
+
 # Configure TV connection
 if [ ! -f "$INSTALL_DIR/config.json" ]; then
     read -rp "TV IP address: " TV_IP
