@@ -25,7 +25,7 @@ sudo cp "$SCRIPT_DIR"/requirements.txt "$INSTALL_DIR/"
 
 # Create venv and install deps
 echo "Setting up Python virtual environment..."
-sudo python3 -m venv "$INSTALL_DIR/venv"
+sudo python3 -m venv --system-site-packages "$INSTALL_DIR/venv"
 sudo "$INSTALL_DIR/venv/bin/pip" install -q --upgrade pip
 sudo "$INSTALL_DIR/venv/bin/pip" install -q -r "$INSTALL_DIR/requirements.txt"
 
