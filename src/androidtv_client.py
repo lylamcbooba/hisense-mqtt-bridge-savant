@@ -214,7 +214,10 @@ class AndroidTVClient:
         future = asyncio.run_coroutine_threadsafe(
             self._remote.async_start_pairing(), self._loop
         )
-        future.result(timeout=10)
+        try:
+            future.result(timeout=10)
+        except CannotConnect:
+            raise ConnectionError("Cannot connect to TV for pairing - is the TV fully powered on?")
         logger.info("Pairing initiated - check TV for code")
 
     def confirm_pairing(self, pin):
@@ -228,4 +231,6 @@ class AndroidTVClient:
             future.result(timeout=10)
         except InvalidAuth:
             raise ValueError("Invalid pairing code")
+        except CannotConnect:
+            raise ConnectionError("Cannot connect to TV - is the TV fully powered on?")
         logger.info("Pairing confirmed")
