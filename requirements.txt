@@ -1,3 +1,0 @@
-androidtvremote2>=0.0.13
-flask>=2.0.0
-waitress>=2.0.0
